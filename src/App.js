@@ -1,17 +1,45 @@
 import React, { Component } from 'react'
-import Rides from './Rides'
-import './App.css'
-import axios from 'axios'
 import {TextField, Button} from '@material-ui/core'
-import {aws_exports} from './aws-exports'
-import {Authenticator} from 'aws-amplify-react'
-import Amplify, {Auth} from 'aws-amplify'
-Amplify.configure(aws_exports)
+import {JSO} from 'jso'
+import Rides from './Rides'
+import './css/App.css'
+import axios from 'axios'
+import Header from './Header'
 
 class App extends Component {
 
   constructor(props) {
     super(props)
+    this.auth = new JSO({
+        client_id: process.env.REACT_APP_CLIENT_ID,
+        redirect_uri: window.origin,
+        response_type: 'token',
+        authorization: `${process.env.REACT_APP_ISSUER}/oauth2/authorize`,
+        debug: true
+      })
+    this.state = {}
+    const axiosConfig = {
+      baseURL: process.env.REACT_APP_ISSUER,
+      url: '.well-known/openid-configuration',
+      method: 'get'
+    }
+    axios(axiosConfig)
+      .then(
+        (res) => {
+          this.auth.configure({
+              client_id: process.env.REACT_APP_CLIENT_ID,
+              redirect_uri: window.origin,
+              response_type: 'token',
+              authorization: res.data.authorization_endpoint,
+              debug: true
+            })
+        },
+        (rejectionReason) => {
+          this.setState({
+            errorMessage: `cannot retrieve issuer configuration - ${rejectionReason}`
+          })
+        }
+      )
     const now = new Date(Date.now())
     this.state = {
       to: '',
@@ -21,6 +49,10 @@ class App extends Component {
   }
 
   componentWillMount() {
+    this.listRides()
+  }
+
+  listRides = () => {
     const config = {
       baseURL: process.env.REACT_APP_API,
       url: 'rides',
@@ -45,54 +77,54 @@ class App extends Component {
   }
 
   addRide = async () => {
-    Auth.currentSession()
-      .then(data => {
-        console.log(JSON.stringify(data))
-        this.setState({
-          enteringRide: true,
-          accessToken: data.accessToken.jwtToken
-        })
-      })
-      .catch(err => {
-        this.setState({
-          needsAuthentication: true
-        })
-      })
+    this.setState({
+      enteringRide: true
+    })
   }
 
   submitRide = e => {
     e.preventDefault()
-    const config = {
-      baseURL: process.env.REACT_APP_API,
-      url: 'rides',
-      method: 'post',
-      headers: {
-        'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.state.accessToken}`
-      },
-      data: {
-        from: this.state.from,
-        to: this.state.to,
-        when: this.state.when
-      }
-    }
-    axios(config)
+    this.auth.getToken()
       .then(
-        (res) => {
-          this.setState({
-            enteringRide: false
-          })
+        tokens => {
+          const config = {
+            baseURL: process.env.REACT_APP_API,
+            url: 'rides',
+            method: 'post',
+            headers: {
+              'x-api-key': process.env.REACT_APP_API_KEY,
+              'Authorization': `Bearer ${tokens.access_token}`
+            },
+            data: {
+              from: this.state.from,
+              to: this.state.to,
+              when: this.state.when
+            }
+          }
+          axios(config)
+            .then(
+              res => {
+                this.setState({
+                  enteringRide: false
+                })
+                this.listRides()
+              },
+              rejectionReason => {
+                this.setState({
+                  errorMessage: `cannot share ride - ${rejectionReason}`,
+                  enteringRide: false
+                })
+              }
+            )
         },
-        (rejectionReason) => {
+        err =>
           this.setState({
-            errorMessage: `cannot share ride - ${rejectionReason}`,
-            enteringRide: false
+            errorMessage: `cannot get token - ${err}`
           })
-        }
       )
   }
 
-  handleChange = ({ target: { name, value } }) =>
+  handleChange = ({target: {name, value}}) =>
     this.setState({
       [name]: value
   })
@@ -101,11 +133,7 @@ class App extends Component {
     let {to, from, when} = this.state
     return (
       <div className="App">
-        <header className="App-header">
-          <p>
-            Ride Sharing
-          </p>
-        </header>
+        <Header auth={this.auth}/>
         {!this.state.enteringRide &&
             <Button onClick={this.addRide}>
               Share another ride
@@ -136,9 +164,6 @@ class App extends Component {
               Share!
             </Button>
           </form>
-        }
-        {this.state.needsAuthentication &&
-          <Authenticator amplifyConfig={aws_exports}/>
         }
         <Rides list={this.state.rides} errorMessage={this.state.errorMessage}/>
       </div>
