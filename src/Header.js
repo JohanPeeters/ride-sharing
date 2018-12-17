@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {AppBar, Toolbar, Typography, Button} from '@material-ui/core'
-import axios from 'axios'
 
 class Header extends Component {
 
@@ -13,61 +12,18 @@ class Header extends Component {
       this.logout = this.logout.bind(this)
     }
 
-    componentDidMount() {
-      this.auth && this.auth.callback()
-      // const fragment = window.location.hash
-      // console.log(`header called with fragment ${fragment}`)
-    }
-
     login() {
       this.auth.getToken()
         .then(token => {
-          console.log(`got it: ${JSON.stringify(token)}`)
-          this.setState({
-            loggedIn: true
-          })
+          this.props.update()
         }, err => {
-          console.log(`drats: ${err}`)
-          this.setState({
-            loggedIn: false
-          })
+          this.props.update()
         })
     }
 
     logout() {
       this.auth.wipeTokens()
-      // const config = {
-      //   baseURL: process.env.REACT_APP_API,
-      //   url: 'rides',
-      //   method: 'post',
-      //   headers: {
-      //     'x-api-key': process.env.REACT_APP_API_KEY,
-      //     'Authorization': `Bearer ${this.state.accessToken}`
-      //   },
-      //   data: {
-      //     from: this.state.from,
-      //     to: this.state.to,
-      //     when: this.state.when
-      //   }
-      // }
-      // axios(config)
-      //   .then(
-      //     res => {
-      //       this.setState({
-      //         enteringRide: false
-      //       })
-      //       this.listRides()
-      //     },
-      //     rejectionReason => {
-      //       this.setState({
-      //         errorMessage: `cannot share ride - ${rejectionReason}`,
-      //         enteringRide: false
-      //       })
-      //     }
-      //   )
-      this.setState({
-        loggedIn: false
-      })
+      this.props.update()
     }
 
     render() {
@@ -77,10 +33,10 @@ class Header extends Component {
             <Typography variant='h3'>
               Ride sharing
             </Typography>
-            {this.auth && !this.auth.checkToken() &&
+            {this.auth && !this.props.loggedIn &&
               <Button onClick={this.login}>Login</Button>
             }
-            {this.auth && this.auth.checkToken() &&
+            {this.props.loggedIn &&
               <Button onClick={this.logout}>Logout</Button>
             }
           </Toolbar>

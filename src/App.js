@@ -1,45 +1,22 @@
 import React, { Component } from 'react'
 import {TextField, Button} from '@material-ui/core'
 import {JSO} from 'jso'
+import axios from 'axios'
 import Rides from './Rides'
 import './css/App.css'
-import axios from 'axios'
 import Header from './Header'
 
 class App extends Component {
 
   constructor(props) {
     super(props)
-    this.auth = new JSO({
-        client_id: process.env.REACT_APP_CLIENT_ID,
-        redirect_uri: window.origin,
-        response_type: 'token',
-        authorization: `${process.env.REACT_APP_ISSUER}/oauth2/authorize`,
-        debug: true
-      })
-    this.state = {}
-    const axiosConfig = {
-      baseURL: process.env.REACT_APP_ISSUER,
-      url: '.well-known/openid-configuration',
-      method: 'get'
+    const jsoConfig = {
+      client_id: process.env.REACT_APP_CLIENT_ID,
+      redirect_uri: window.origin,
+      response_type: 'token',
+      authorization: process.env.REACT_APP_AUTHORIZATION_ENDPOINT
     }
-    axios(axiosConfig)
-      .then(
-        (res) => {
-          this.auth.configure({
-              client_id: process.env.REACT_APP_CLIENT_ID,
-              redirect_uri: window.origin,
-              response_type: 'token',
-              authorization: res.data.authorization_endpoint,
-              debug: true
-            })
-        },
-        (rejectionReason) => {
-          this.setState({
-            errorMessage: `cannot retrieve issuer configuration - ${rejectionReason}`
-          })
-        }
-      )
+    this.auth = new JSO(jsoConfig)
     const now = new Date(Date.now())
     this.state = {
       to: '',
@@ -49,7 +26,15 @@ class App extends Component {
   }
 
   componentWillMount() {
+    this.auth.callback()
+    this.checkLogin()
     this.listRides()
+  }
+
+  checkLogin = () => {
+    this.setState({
+      loggedIn: this.auth.checkToken()
+    })
   }
 
   listRides = () => {
@@ -133,8 +118,8 @@ class App extends Component {
     let {to, from, when} = this.state
     return (
       <div className="App">
-        <Header auth={this.auth}/>
-        {!this.state.enteringRide &&
+        <Header auth={this.auth} update={this.checkLogin} loggedIn={this.state.loggedIn}/>
+        {this.state.loggedIn && !this.state.enteringRide &&
             <Button onClick={this.addRide}>
               Share another ride
             </Button>
@@ -165,7 +150,12 @@ class App extends Component {
             </Button>
           </form>
         }
-        <Rides list={this.state.rides} errorMessage={this.state.errorMessage}/>
+        <Rides list={this.state.rides} auth={this.auth} update={this.listRides}  loggedIn={this.state.loggedIn}/>
+        {this.state.errorMessage &&
+          <p>
+            {this.state.errorMessage}
+          </p>
+        }
       </div>
     )
   }

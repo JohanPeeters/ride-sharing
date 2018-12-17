@@ -9,14 +9,14 @@ If you only want to observe the behavior of this SPA, you can do so at https://r
 1. Gain access to a backend API by setting one up for yourself or requesting the following from the author:
    * the URL (including stage) of the API
    * an API key
-   * the URL of the authorization server (issuer)
+   * the URL of the authorization endpoint
    * a client ID
 1. `git clone https://github.com/JohanPeeters/ride-sharing`
 1. `cd ride-sharing`
 1. All the information allowing you to connect to the API need to be supplied to the SPA. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
    * `REACT_APP_API`
    * `REACT_APP_API_KEY`
-   * `REACT_APP_ISSUER`
+   * `REACT_APP_AUTHORIZATION_ENDPOINT`
    * `REACT_APP_CLIENT_ID`
 1. `npm start`
    * starts a development server
