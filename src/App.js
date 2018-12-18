@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import {TextField, Button} from '@material-ui/core'
 import {JSO} from 'jso'
 import axios from 'axios'
 import Rides from './Rides'
 import './css/App.css'
 import Header from './Header'
+import {verify} from './helpers/tokens'
 
 class App extends Component {
 
@@ -14,7 +15,7 @@ class App extends Component {
       client_id: process.env.REACT_APP_CLIENT_ID,
       redirect_uri: window.origin,
       response_type: 'token',
-      authorization: process.env.REACT_APP_AUTHORIZATION_ENDPOINT
+      authorization: props.asConfig.authorization_endpoint
     }
     this.auth = new JSO(jsoConfig)
     const now = new Date(Date.now())
@@ -31,9 +32,31 @@ class App extends Component {
     this.listRides()
   }
 
-  checkLogin = () => {
+  checkLogin = async () => {
+    const tokens = this.auth.checkToken()
+    if (tokens) {
+      let idToken
+      try {
+        idToken = await verify(tokens.id_token, this.props.truststore)
+      } catch (err) {
+        this.setState({
+          loggedIn: false,
+          user: undefined,
+          errorMessage: `cannot verify token - ${err}`
+        })
+      }
+      if (idToken) {
+        console.log(`got idToken: ${JSON.stringify(idToken)}`)
+        this.setState({
+          loggedIn: true,
+          user: idToken.sub
+        })
+        return
+      }
+    }
     this.setState({
-      loggedIn: this.auth.checkToken()
+      loggedIn: false,
+      user: undefined
     })
   }
 
