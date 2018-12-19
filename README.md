@@ -85,4 +85,4 @@ JSO checks whether there is an outstanding request for the received tokens and s
 
 #### Log out
 
-The user may wish to stop using his or her credentials on the back end. There is no good way of doing this within the validity period of the session between the user agent and Cognito: JSO offers a `wipeTokens()` function, which discards tokens from local storage. However, a new login request is immediately satisfied without further authentication since the session between the user agent and Cognito has not expired. Removing the cookie is not an option since it is HttpOnly.
+The user may wish to stop using his or her credentials on the back end. There is no good way of doing this within the validity period of the session between the user agent and Cognito: JSO offers a `wipeTokens()` function, which discards tokens from local storage, and Cognito has a logout endpoint which invalidates tokens. However, a new login request is immediately satisfied without further authentication since the session between the user agent and Cognito has not expired. Removing the cookie is not an option since it is HttpOnly.

@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
-import {TextField, Button} from '@material-ui/core'
 import {JSO} from 'jso'
 import axios from 'axios'
-import Rides from './Rides'
+import {Button} from '@material-ui/core'
+import {Rides} from './Rides'
+import RideForm from './RideForm'
 import './css/App.css'
 import Header from './Header'
 import {verify} from './helpers/tokens'
@@ -18,12 +19,7 @@ class App extends Component {
       authorization: props.asConfig.authorization_endpoint
     }
     this.auth = new JSO(jsoConfig)
-    const now = new Date(Date.now())
-    this.state = {
-      to: '',
-      from: '',
-      when: `${1900 + now.getYear()}-${now.getMonth() + 1}-${now.getDate() + 1}T12:00`
-    }
+    this.state = {}
   }
 
   componentWillMount() {
@@ -44,23 +40,25 @@ class App extends Component {
           user: undefined,
           errorMessage: `cannot verify token - ${err}`
         })
+        return
       }
       if (idToken) {
-        console.log(`got idToken: ${JSON.stringify(idToken)}`)
         this.setState({
           loggedIn: true,
-          user: idToken.sub
+          user: idToken.sub,
+          errorMessage: undefined
         })
         return
       }
     }
     this.setState({
       loggedIn: false,
-      user: undefined
+      user: undefined,
+      errorMessage: 'cannot retrieve ID token'
     })
   }
 
-  listRides = () => {
+  listRides = (errorMessage) => {
     const config = {
       baseURL: process.env.REACT_APP_API,
       url: 'rides',
@@ -73,11 +71,14 @@ class App extends Component {
       .then(
         (res) => {
           this.setState({
-            rides: res.data
+            rides: res.data,
+            enteringRide: false,
+            errorMessage: errorMessage?errorMessage:undefined
           })
         },
         (rejectionReason) => {
           this.setState({
+            enteringRide: false,
             errorMessage: `cannot retrieve rides - ${rejectionReason}`
           })
         }
@@ -90,55 +91,7 @@ class App extends Component {
     })
   }
 
-  submitRide = e => {
-    e.preventDefault()
-    this.auth.getToken()
-      .then(
-        tokens => {
-          const config = {
-            baseURL: process.env.REACT_APP_API,
-            url: 'rides',
-            method: 'post',
-            headers: {
-              'x-api-key': process.env.REACT_APP_API_KEY,
-              'Authorization': `Bearer ${tokens.access_token}`
-            },
-            data: {
-              from: this.state.from,
-              to: this.state.to,
-              when: this.state.when
-            }
-          }
-          axios(config)
-            .then(
-              res => {
-                this.setState({
-                  enteringRide: false
-                })
-                this.listRides()
-              },
-              rejectionReason => {
-                this.setState({
-                  errorMessage: `cannot share ride - ${rejectionReason}`,
-                  enteringRide: false
-                })
-              }
-            )
-        },
-        err =>
-          this.setState({
-            errorMessage: `cannot get token - ${err}`
-          })
-      )
-  }
-
-  handleChange = ({target: {name, value}}) =>
-    this.setState({
-      [name]: value
-  })
-
   render() {
-    let {to, from, when} = this.state
     return (
       <div className="App">
         <Header auth={this.auth} update={this.checkLogin} loggedIn={this.state.loggedIn}/>
@@ -148,32 +101,13 @@ class App extends Component {
             </Button>
         }
         {this.state.enteringRide &&
-          <form onSubmit={this.submitRide}>
-            <TextField
-              label='From'
-              name='from'
-              value={from}
-              onChange={this.handleChange}
-            />
-            <TextField
-              label='To'
-              name='to'
-              value={to}
-              onChange={this.handleChange}
-            />
-            <TextField
-              label='When'
-              name='when'
-              type='datetime-local'
-              value={when}
-              onChange={this.handleChange}
-            />
-            <Button type='submit'>
-              Share!
-            </Button>
-          </form>
+          <RideForm data={{}} auth={this.auth} method='post' done={this.listRides}/>
         }
-        <Rides list={this.state.rides} auth={this.auth} update={this.listRides}  loggedIn={this.state.loggedIn}/>
+        <Rides list={this.state.rides}
+              auth={this.auth}
+              update={this.listRides}
+              loggedIn={this.state.loggedIn}
+              />
         {this.state.errorMessage &&
           <p>
             {this.state.errorMessage}
