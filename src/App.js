@@ -53,8 +53,7 @@ class App extends Component {
     }
     this.setState({
       loggedIn: false,
-      user: undefined,
-      errorMessage: 'cannot retrieve ID token'
+      user: undefined
     })
   }
 
