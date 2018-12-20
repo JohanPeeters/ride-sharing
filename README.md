@@ -2,6 +2,10 @@
 
 This is an SPA written for didactic purposes. It consumes a backend API defined in [a companion, Ride Sharing API project](https://github.com/JohanPeeters/rides-api).
 
+## Prerequisites
+
+Node 8.x
+
 ## Getting Started
 
 If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk. On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
@@ -9,15 +13,16 @@ If you only want to observe the behavior of this SPA, you can do so at https://r
 1. Gain access to a backend API by setting one up for yourself or requesting the following from the author:
    * the URL (including stage) of the API
    * an API key
-   * the URL of the authorization endpoint
+   * the issuer's URL
    * a client ID
 1. `git clone https://github.com/JohanPeeters/ride-sharing`
 1. `cd ride-sharing`
 1. All the information allowing you to connect to the API need to be supplied to the SPA. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
    * `REACT_APP_API`
    * `REACT_APP_API_KEY`
-   * `REACT_APP_AUTHORIZATION_ENDPOINT`
+   * `REACT_APP_ISSUER`
    * `REACT_APP_CLIENT_ID`
+1. `npm install`
 1. `npm start`
    * starts a development server
    * opens a tab in the default browser
