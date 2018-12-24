@@ -5,26 +5,31 @@ class Header extends Component {
 
     constructor(props) {
       super(props)
-      this.auth = props.auth
-      this.state = {
-      }
-      this.login = this.login.bind(this)
-      this.logout = this.logout.bind(this)
+      this.userManager = this.props.userManager
+      this.state = {}
     }
 
-    login() {
-      this.auth.getToken()
-        .then(token => {
-          this.props.update()
-        }, err => {
+    componentWillMount() {
+      const params = (new URL(document.location)).searchParams
+      if (params && params.get('code'))
+        this.userManager.signinRedirectCallback()
+          .then(user => {
+            this.props.update()
+          }, err =>
+            console.log(`login not successful: ${err}`)
+          )
+    }
+
+    login = () => {
+      this.userManager.signinRedirect()
+    }
+
+    logout = async () => {
+      this.userManager.removeUser()
+        .then(() => {
           this.props.update()
         })
-    }
-
-    logout() {
-      this.auth.wipeTokens()
-      this.props.update()
-    }
+      }
 
     render() {
       return(
@@ -33,7 +38,7 @@ class Header extends Component {
             <Typography variant='h3'>
               Ride sharing
             </Typography>
-            {this.auth && !this.props.loggedIn &&
+            {!this.props.loggedIn &&
               <Button onClick={this.login}>Login</Button>
             }
             {this.props.loggedIn &&

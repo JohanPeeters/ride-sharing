@@ -1,63 +1,61 @@
 import React, {Component} from 'react'
-import {JSO} from 'jso'
 import axios from 'axios'
 import {Button} from '@material-ui/core'
+import {UserManager} from 'oidc-client'
 import {Rides} from './Rides'
 import RideForm from './RideForm'
 import './css/App.css'
 import Header from './Header'
-import {verify} from './helpers/tokens'
+
+const config = {
+  authority: process.env.REACT_APP_ISSUER,
+  client_id: process.env.REACT_APP_CLIENT_ID,
+  redirect_uri: window.origin,
+  response_type: 'code',
+  post_logout_redirect_uri: window.origin,
+  scope: 'openid rides/create rides/delete rides/update'
+}
 
 class App extends Component {
 
   constructor(props) {
     super(props)
-    const jsoConfig = {
-      client_id: process.env.REACT_APP_CLIENT_ID,
-      redirect_uri: window.origin,
-      response_type: 'token',
-      authorization: props.asConfig.authorization_endpoint
-    }
-    this.auth = new JSO(jsoConfig)
+    this.userManager =  new UserManager(config)
     this.state = {}
   }
 
   componentWillMount() {
-    this.auth.callback()
     this.checkLogin()
     this.listRides()
   }
 
-  checkLogin = async () => {
-    const tokens = this.auth.checkToken()
-    if (tokens) {
-      let idToken
-      try {
-        idToken = await verify(tokens.id_token, this.props.truststore)
-      } catch (err) {
+  checkLogin = () => {
+    this.userManager.getUser()
+      .then(user => {
+        if (user)
+          this.setState({
+            user: user
+          })
+        else
+          this.setState({
+            user: undefined
+          })
+      })
+      .catch(err => {
         this.setState({
-          loggedIn: false,
-          user: undefined,
-          errorMessage: `cannot verify token - ${err}`
+          user: undefined
         })
-        return
-      }
-      if (idToken) {
-        this.setState({
-          loggedIn: true,
-          user: idToken.sub,
-          errorMessage: undefined
-        })
-        return
-      }
-    }
-    this.setState({
-      loggedIn: false,
-      user: undefined
-    })
+      })
   }
 
-  listRides = (errorMessage) => {
+  done = (errorMessage) => {
+    this.setState({
+      errorMessage: errorMessage
+    })
+    this.listRides()
+  }
+
+  listRides = () => {
     const config = {
       baseURL: process.env.REACT_APP_API,
       url: 'rides',
@@ -71,17 +69,16 @@ class App extends Component {
         (res) => {
           this.setState({
             rides: res.data,
-            enteringRide: false,
-            errorMessage: errorMessage?errorMessage:undefined
+            enteringRide: false
           })
-        },
-        (rejectionReason) => {
+      })
+      .catch(
+        (err) => {
           this.setState({
             enteringRide: false,
-            errorMessage: `cannot retrieve rides - ${rejectionReason}`
+            errorMessage: `cannot retrieve rides - ${err}`
           })
-        }
-      )
+      })
   }
 
   addRide = async () => {
@@ -93,19 +90,18 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header auth={this.auth} update={this.checkLogin} loggedIn={this.state.loggedIn}/>
-        {this.state.loggedIn && !this.state.enteringRide &&
+        <Header userManager={this.userManager} update={this.checkLogin} loggedIn={this.state.user}/>
+        {this.state.user && !this.state.enteringRide &&
             <Button onClick={this.addRide}>
               Share another ride
             </Button>
         }
         {this.state.enteringRide &&
-          <RideForm data={{}} auth={this.auth} method='post' done={this.listRides}/>
+          <RideForm data={{}} user={this.state.user} method='post' done={this.done}/>
         }
         <Rides list={this.state.rides}
-              auth={this.auth}
-              update={this.listRides}
-              loggedIn={this.state.loggedIn}
+              user={this.state.user}
+              update={this.done}
               />
         {this.state.errorMessage &&
           <p>
