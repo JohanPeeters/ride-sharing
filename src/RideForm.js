@@ -1,9 +1,11 @@
 import React, {Component} from 'react'
 import {TextField, Button} from '@material-ui/core'
 import axios from 'axios'
+import AuthenticatedUserContext from './AuthenticatedUserContext'
 
 
 class RideForm extends Component {
+  static contextType = AuthenticatedUserContext
 
   constructor(props) {
     super(props)
@@ -12,9 +14,9 @@ class RideForm extends Component {
 
   initialState = () => {
     const now = new Date(Date.now())
+    const initialized = this.props.data.to || this.props.data.from || this.props.data.when
     return {
-      enteringRide: false,
-      disabled: this.props.disabled,
+      disabled: initialized?true:false,
       to: this.props.data.to,
       from: this.props.data.from,
       when: this.props.data.when || `${1900 + now.getYear()}-${now.getMonth() + 1}-${now.getDate() + 1}T12:00`
@@ -35,7 +37,7 @@ class RideForm extends Component {
       method: this.props.method || 'put',
       headers: {
         'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.props.user.access_token}`
+        'Authorization': `Bearer ${this.context.access_token}`
       },
       data: {
         from: this.state.from,
@@ -47,24 +49,27 @@ class RideForm extends Component {
       .then(
         res => {
           this.props.done()
+          this.setState({
+            disabled: true
+          })
       })
       .catch(
         error => {
           if (error.response) {
             // The request was made and the server responded with a status code
             // that falls out of the range of 2xx
-            this.setState(this.initialState())
             this.props.done(error.response.data.message)
+            this.setState(this.initialState())
           } else if (error.request) {
             // The request was made but no response was received
             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
             // http.ClientRequest in node.js
-            this.setState(this.initialState())
             this.props.done(`no response to share request`)
+            this.setState(this.initialState())
           } else {
             // Something happened in setting up the request that triggered an Error
-            this.setState(this.initialState())
             this.props.done(error.message)
+            this.setState(this.initialState())
           }
         })
   }
@@ -77,7 +82,7 @@ class RideForm extends Component {
       method: 'delete',
       headers: {
         'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.props.user.access_token}`
+        'Authorization': `Bearer ${this.context.access_token}`
       }
     }
     axios(config)
@@ -142,7 +147,7 @@ class RideForm extends Component {
             </Button>
           }
         </form>
-        {this.props.user &&
+        {this.context &&
           <div>
             <Button onClick={this.remove}>
               Delete

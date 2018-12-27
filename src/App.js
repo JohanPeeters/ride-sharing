@@ -6,6 +6,7 @@ import {Rides} from './Rides'
 import RideForm from './RideForm'
 import './css/App.css'
 import Header from './Header'
+import AuthenticatedUserContext from './AuthenticatedUserContext'
 
 const config = {
   authority: process.env.REACT_APP_ISSUER,
@@ -22,30 +23,47 @@ class App extends Component {
     super(props)
     this.userManager =  new UserManager(config)
     this.state = {}
+    this.userManager.events.addUserLoaded(() => {
+        this.userManager.getUser()
+          .then(user => {
+            if (user)
+              this.setState({
+                user: user
+              })
+          })
+        })
+    this.userManager.events.addUserUnloaded(() => {
+      this.setState({
+        user: undefined
+      })
+    })
+    this.userManager.events.addAccessTokenExpired(() => {
+      this.setState({
+        user: undefined
+      })
+    })
   }
 
   componentWillMount() {
-    this.checkLogin()
+    const params = (new URL(window.location)).searchParams
+    if (params && params.get('code')) {
+      this.userManager.signinRedirectCallback()
+    //  window.location = window.origin
+    }
+    this.userManager.getUser()
+      .then(user => {
+        this.setState({
+          user: user
+        })
+      })
     this.listRides()
   }
 
-  checkLogin = () => {
-    this.userManager.getUser()
-      .then(user => {
-        if (user)
-          this.setState({
-            user: user
-          })
-        else
-          this.setState({
-            user: undefined
-          })
-      })
-      .catch(err => {
-        this.setState({
-          user: undefined
-        })
-      })
+  logout = () => {
+    this.userManager.removeUser()
+    this.setState({
+      user: undefined
+    })
   }
 
   done = (errorMessage) => {
@@ -81,7 +99,7 @@ class App extends Component {
       })
   }
 
-  addRide = async () => {
+  addRide = () => {
     this.setState({
       enteringRide: true
     })
@@ -90,24 +108,25 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header userManager={this.userManager} update={this.checkLogin} loggedIn={this.state.user}/>
-        {this.state.user && !this.state.enteringRide &&
-            <Button onClick={this.addRide}>
-              Share another ride
-            </Button>
-        }
-        {this.state.enteringRide &&
-          <RideForm data={{}} user={this.state.user} method='post' done={this.done}/>
-        }
-        <Rides list={this.state.rides}
-              user={this.state.user}
-              update={this.done}
-              />
-        {this.state.errorMessage &&
-          <p>
-            {this.state.errorMessage}
-          </p>
-        }
+        <AuthenticatedUserContext.Provider value={this.state.user}>
+          <Header userManager={this.userManager} logout={this.logout}/>
+          {this.state.user && !this.state.enteringRide &&
+              <Button onClick={this.addRide}>
+                Share another ride
+              </Button>
+          }
+          {this.state.user && this.state.enteringRide &&
+            <RideForm data={{}} method='post' done={this.done}/>
+          }
+          <Rides list={this.state.rides}
+                update={this.done}
+                />
+          {this.state.errorMessage &&
+            <p>
+              {this.state.errorMessage}
+            </p>
+          }
+        </AuthenticatedUserContext.Provider>
       </div>
     )
   }

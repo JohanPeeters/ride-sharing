@@ -1,35 +1,49 @@
 import React, {Component} from 'react'
 import {AppBar, Toolbar, Typography, Button} from '@material-ui/core'
+import AuthenticatedUserContext from './AuthenticatedUserContext'
 
 class Header extends Component {
+    static contextType = AuthenticatedUserContext
 
     constructor(props) {
       super(props)
       this.userManager = this.props.userManager
-      this.state = {}
+      // this.state = {}
+      // this.setLoggedInState()
+      // this.userManager.events.addUserLoaded(() => {
+      //   this.setState({
+      //     loggedIn: true
+      //   })
+      // })
+      // this.userManager.events.addUserUnloaded(() => {
+      //   this.setState({
+      //     loggedIn: false
+      //   })
+      // })
     }
 
-    componentWillMount() {
-      const params = (new URL(document.location)).searchParams
-      if (params && params.get('code'))
-        this.userManager.signinRedirectCallback()
-          .then(user => {
-            this.props.update()
-          }, err =>
-            console.log(`login not successful: ${err}`)
-          )
-    }
+    // setLoggedInState = () => {
+    //   this.userManager.getUser()
+    //     .then(user => {
+    //       if (user)
+    //         this.setState({
+    //           loggedIn: true
+    //         })
+    //       else
+    //         this.setState({
+    //           loggedIn: false
+    //         })
+    //     })
+    //     .catch(() => {
+    //       this.setState({
+    //         loggedIn: false
+    //       })
+    //     })
+    // }
 
     login = () => {
       this.userManager.signinRedirect()
     }
-
-    logout = async () => {
-      this.userManager.removeUser()
-        .then(() => {
-          this.props.update()
-        })
-      }
 
     render() {
       return(
@@ -38,12 +52,9 @@ class Header extends Component {
             <Typography variant='h3'>
               Ride sharing
             </Typography>
-            {!this.props.loggedIn &&
-              <Button onClick={this.login}>Login</Button>
-            }
-            {this.props.loggedIn &&
-              <Button onClick={this.logout}>Logout</Button>
-            }
+              <Button onClick={this.context?this.props.logout:this.login}>
+                {this.context?'logout':'login'}
+              </Button>
           </Toolbar>
         </AppBar>
       )
