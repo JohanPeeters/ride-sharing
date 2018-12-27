@@ -62,7 +62,8 @@ class App extends Component {
   logout = () => {
     this.userManager.removeUser()
     this.setState({
-      user: undefined
+      user: undefined,
+      errorMessage: undefined
     })
   }
 
