@@ -123,11 +123,23 @@ class App extends Component {
                 update={this.done}
                 />
           {this.state.errorMessage &&
-            <p>
+            <p className='error'>
               {this.state.errorMessage}
             </p>
           }
         </AuthenticatedUserContext.Provider>
+        <h3>
+          Ride sharing is the future. Check out some of the other initiatives.
+        </h3>
+        <iframe
+          title='background information'
+          width="560"
+          height="315"
+        //  src="https://www.youtube.com/embed/TcQUIfhOSyU"
+          frameBorder="0"
+          allow="fullscreen"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
+        />
       </div>
     )
   }

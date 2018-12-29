@@ -6,6 +6,7 @@ const Rides = (props) => {
     <div>
       {props.list && props.list.map(ride =>
         <RideForm data={ride}
+              disabled={true}
               key={ride.id}
               done={props.update}/>
       )}

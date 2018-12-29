@@ -91,3 +91,11 @@ oidc-client checks whether there is an outstanding request for the received code
 #### Log out
 
 The user may wish to stop using his or her credentials on the back end. There is no good way of doing this within the validity period of the session between the user agent and Cognito: oidc-client offers a `removeUser()` function, which discards tokens from local storage, and Cognito has a logout endpoint which invalidates tokens. However, a new login request is immediately satisfied without further authentication since the session between the user agent and Cognito has not expired. Removing the cookie is not an option since it is HttpOnly.
+
+## Open Issues
+
+* *log out* - see above.
+* *code lingers* - the authorization code is passed as a query parameter when the authorization server redirects the user back tot the application. The application contains code to retrieve the code and exchange it for tokens. Once the code is retrieved, the query parameters could be stripped out of the URL. This is not done to avoid the flicker when the page reloads. The visibility of the code is not a security problem since the code is also protected with a code verifier.
+* *flicker on redirect* - when the user is logged in to the authorization server, but has cleared tokens, he or she can log back in without re-authenticating if the authenticated session has not expired (see above). In this scenario, there is a redirect from the client to the AS and back to the client without any user interaction. Ideally, the user would not notice. This is not the case since a redirect causes the React application to reload and re-render. My current thinking is that this is inherent in React and cannot be avoided, but I am hoping to be proven wrong. Moving to popups does not seem to be a fruitful approach as it would merely replace one UI glitch with another.
+* *token validity period* is 1 hour. This is rather long, but fixed by Cognito and, at the time of writing, cannot be changed.
+* *network round trips* - each time a token is requested, issuer metadata are retrieved. oidc-client-js seems to do this by design. Since metadata, such as the location of the authorization or token endpoints change only very sporadically, they are prime candidates for caching. This could be done with the service worker. Currently, the service worker is disabled.
