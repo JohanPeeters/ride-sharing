@@ -2,5 +2,5 @@
   for = "/*"
 
   [headers.values]
-    Content-Security-Policy-Report-Only = "default-src 'self'; form-action 'none'; frame-ancestors 'none'; connect-src 3o7a5pnqt7.execute-api.eu-west-1.amazonaws.com; frame-src www.youtube.com; img-src 'self'; script-src-elem 'self'; style-src-elem 'self'; report-uri REPORT_URI_PLACEHOLDER"
+    Content-Security-Policy = "connect-src 3o7a5pnqt7.execute-api.eu-west-1.amazonaws.com; frame-src www.youtube.com; img-src 'self'; script-src-elem 'self'; style-src-elem 'self'; report-to default"
     Report-To = '{"group":"default","max_age":31536000,"endpoints":[{"url":"REPORTING_API_PLACEHOLDER"}],"include_subdomains":true}'
