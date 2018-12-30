@@ -2,8 +2,7 @@
   for = "/*"
 
   [headers.values]
-    # Content-Security-Policy = "connect-src 3o7a5pnqt7.execute-api.eu-west-1.amazonaws.com cognito-idp.eu-west-1.amazonaws.com ride-sharing.auth.eu-west-1.amazoncognito.com; frame-src www.youtube.com; img-src 'self'; script-src 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; style-src 'self'; object-src 'none'; report-to default"
     # Content-Security-Policy-Report-Only = "default-src 'none'; form-action 'none'; frame-ancestors 'none'; report-uri REPORT_URI_PLACEHOLDER"
-    Content-Security-Policy-Report-Only = "connect-src 3o7a5pnqt7.execute-api.eu-west-1.amazonaws.com cognito-idp.eu-west-1.amazonaws.com ride-sharing.auth.eu-west-1.amazoncognito.com; frame-src www.youtube.com; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; report-to default; report-uri REPORT_URI_PLACEHOLDER"
+    Content-Security-Policy = "connect-src REACT_APP_API_HOST_PLACEHOLDER cognito-idp.eu-west-1.amazonaws.com AS_PLACEHOLDER; frame-src www.youtube.com; img-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'none'; report-to default"
     Report-To = '{"group":"default","max_age":31536000,"endpoints":[{"url":"REPORTING_API_PLACEHOLDER"}],"include_subdomains":true}'
     NEL = '{"report_to":"default","max_age":31536000,"include_subdomains":true}'

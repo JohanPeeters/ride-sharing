@@ -76,7 +76,7 @@ class App extends Component {
 
   listRides = () => {
     const config = {
-      baseURL: process.env.REACT_APP_API,
+      baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
       url: 'rides',
       method: 'get',
       headers: {

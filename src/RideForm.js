@@ -32,7 +32,7 @@ class RideForm extends Component {
     e.preventDefault()
     const path = this.props.data.id?`rides/${this.props.data.id}`:'rides'
     const config = {
-      baseURL: process.env.REACT_APP_API,
+      baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
       url: path,
       method: this.props.method || 'put',
       headers: {
@@ -77,7 +77,7 @@ class RideForm extends Component {
   remove = e => {
     e.preventDefault()
     const config = {
-      baseURL: process.env.REACT_APP_API,
+      baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
       url: `rides/${this.props.data.id}`,
       method: 'delete',
       headers: {
