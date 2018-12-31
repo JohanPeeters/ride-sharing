@@ -19,6 +19,31 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <!--
+      The application uses Material-UI - React components that implement Google's
+      Material Design look and feel. Material-UI in turn recommends using
+      Roboto font. These are loaded here. Unfortunately, they cannot be protected
+      with SRI since the Fonts API's response is dynamic: a different stylesheet
+      is served for different user agents. The stylesheet is also not versioned,
+      meaning that the consumer has no choice over the version; a new version may
+      be served without notice.
+    -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <!-- Hotjar Tracking Code for ride-sharing.tk -->
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}
+            h._hjSettings={hjid:%REACT_APP_HOTJAR_ID%,hjsv:%REACT_APP_HOTJAR_SNIPPET_VERSION%}
+            a=o.getElementsByTagName('head')[0]
+            r=o.createElement('script')
+            r.async=1
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv
+            r.crossOrigin='anonymous'
+            r.integrity="%REACT_APP_HOTJAR_SRI%"
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
     <title>React App</title>
   </head>
   <body>
