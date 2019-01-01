@@ -3,7 +3,7 @@
 
   [headers.values]
     # Content-Security-Policy-Report-Only = "default-src 'none'; form-action 'none'; frame-ancestors 'none'; report-uri REPORT_URI_PLACEHOLDER"
-    Content-Security-Policy = "connect-src REACT_APP_API_HOST_PLACEHOLDER cognito-idp.eu-west-1.amazonaws.com AS_PLACEHOLDER; frame-src www.youtube.com; img-src 'self'; script-src 'self' 'unsafe-inline' 'REACT_APP_HOTJAR_SRI_PLACEHOLDER' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline'; object-src 'none'; report-to default"
+    Content-Security-Policy = "connect-src REACT_APP_API_HOST_PLACEHOLDER cognito-idp.eu-west-1.amazonaws.com AS_PLACEHOLDER; frame-src www.youtube.com; img-src 'self'; script-src 'self' 'REACT_APP_HOTJAR_SRI_PLACEHOLDER'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; object-src 'none'; report-to default"
     Report-To = '{"group":"default","max_age":31536000,"endpoints":[{"url":"REPORTING_API_PLACEHOLDER"}],"include_subdomains":true}'
     NEL = '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
     Referrer-Policy = "strict-origin-when-cross-origin"
