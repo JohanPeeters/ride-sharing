@@ -69,67 +69,6 @@ class App extends Component {
     })
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const urlStr = window.location
-  //   const url = new URL(urlStr)
-  //   const params = url.searchParams
-  //   if (params && params.get('code')) return false
-  //   return true
-  // }
-
-  // componentDidMount() {
-  //   const urlStr = window.location
-  //   const url = new URL(urlStr)
-  //   const params = url.searchParams
-  //   if (params && params.get('code')) {
-  //     this.userManager.getUser()
-  //       .then(user => {
-  //         if (!user) {
-  //           this.userManager.signinRedirectCallback(urlStr)
-  //           .then(user => {
-  //             this.setState({
-  //               user: user
-  //             })
-  //             window.location.replace(window.origin)
-  //           })
-  //           .catch(error => {
-  //             this.setState({
-  //               errorMessage: JSON.stringify(error)
-  //             })
-  //             window.location.replace(window.origin)
-  //           })
-  //         } else {
-  //           window.location.replace(window.origin)
-  //         }
-  //       })
-  //       .catch(() => {
-  //         this.userManager.signinRedirectCallback(urlStr)
-  //           .then(user => {
-  //             this.setState({
-  //               user: user
-  //             })
-  //             window.location.replace(window.origin)
-  //           })
-  //           .catch(error => {
-  //             this.setState({
-  //               errorMessage: JSON.stringify(error)
-  //             })
-  //             window.location.replace(window.origin)
-  //           })
-  //       })
-  //     .finally(() => {
-  //     })
-  //   } else {
-  //     this.userManager.getUser()
-  //       .then(user => {
-  //         this.setState({
-  //           user: user
-  //         })
-  //       })
-  //     this.listRides()
-  //   }
-  //}
-
   logout = () => {
     this.userManager.removeUser()
     this.setState({
