@@ -14,15 +14,40 @@ const config = {
   redirect_uri: window.origin,
   response_type: 'code',
   post_logout_redirect_uri: window.origin,
-  scope: 'openid rides/create rides/delete rides/update'
+  scope: 'openid rides/create rides/delete rides/update',
+  loadUserInfo: false
 }
 
 class App extends Component {
 
   constructor(props) {
     super(props)
-    this.userManager =  new UserManager(config)
     this.state = {}
+    this.userManager =  new UserManager(config)
+    const urlStr = window.location
+    const url = new URL(urlStr)
+    const params = url.searchParams
+    if (params && params.get('code')) {
+      this.userManager.signinRedirectCallback(urlStr)
+        .then(user => {
+          window.location.replace(window.origin)
+        })
+        .catch(error => {
+          this.setState({
+            errorMessage: JSON.stringify(error)
+          })
+          window.location.replace(window.origin)
+        })
+    } else {
+      this.userManager.getUser()
+        .then(user => {
+          if (user)
+            this.setState({
+              user: user
+            })
+        })
+      this.listRides()
+    }
     this.userManager.events.addUserLoaded(() => {
         this.userManager.getUser()
           .then(user => {
@@ -44,20 +69,66 @@ class App extends Component {
     })
   }
 
-  componentWillMount() {
-    const params = (new URL(window.location)).searchParams
-    if (params && params.get('code')) {
-      this.userManager.signinRedirectCallback()
-    //  window.location = window.origin
-    }
-    this.userManager.getUser()
-      .then(user => {
-        this.setState({
-          user: user
-        })
-      })
-    this.listRides()
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const urlStr = window.location
+  //   const url = new URL(urlStr)
+  //   const params = url.searchParams
+  //   if (params && params.get('code')) return false
+  //   return true
+  // }
+
+  // componentDidMount() {
+  //   const urlStr = window.location
+  //   const url = new URL(urlStr)
+  //   const params = url.searchParams
+  //   if (params && params.get('code')) {
+  //     this.userManager.getUser()
+  //       .then(user => {
+  //         if (!user) {
+  //           this.userManager.signinRedirectCallback(urlStr)
+  //           .then(user => {
+  //             this.setState({
+  //               user: user
+  //             })
+  //             window.location.replace(window.origin)
+  //           })
+  //           .catch(error => {
+  //             this.setState({
+  //               errorMessage: JSON.stringify(error)
+  //             })
+  //             window.location.replace(window.origin)
+  //           })
+  //         } else {
+  //           window.location.replace(window.origin)
+  //         }
+  //       })
+  //       .catch(() => {
+  //         this.userManager.signinRedirectCallback(urlStr)
+  //           .then(user => {
+  //             this.setState({
+  //               user: user
+  //             })
+  //             window.location.replace(window.origin)
+  //           })
+  //           .catch(error => {
+  //             this.setState({
+  //               errorMessage: JSON.stringify(error)
+  //             })
+  //             window.location.replace(window.origin)
+  //           })
+  //       })
+  //     .finally(() => {
+  //     })
+  //   } else {
+  //     this.userManager.getUser()
+  //       .then(user => {
+  //         this.setState({
+  //           user: user
+  //         })
+  //       })
+  //     this.listRides()
+  //   }
+  //}
 
   logout = () => {
     this.userManager.removeUser()
