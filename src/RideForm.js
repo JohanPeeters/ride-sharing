@@ -13,13 +13,17 @@ class RideForm extends Component {
   }
 
   initialState = () => {
+    const ensure2Digits = number => {
+      return ('0' + number).slice(-2)
+    }
     const now = new Date(Date.now())
     const initialized = this.props.data.to || this.props.data.from || this.props.data.when
     return {
       disabled: initialized?true:false,
       to: this.props.data.to,
       from: this.props.data.from,
-      when: this.props.data.when || `${1900 + now.getYear()}-${now.getMonth() + 1}-${now.getDate() + 1}T12:00`
+      when: this.props.data.when ||
+        `${1900 + now.getYear()}-${ensure2Digits(now.getMonth() + 1)}-${ensure2Digits(now.getDate() + 1)}T12:00`
     }
   }
 
@@ -117,7 +121,8 @@ class RideForm extends Component {
 
   render() {
     return (
-      <div>
+      <AuthenticatedUserContext.Consumer>
+      {user => <div>
         <form onSubmit={this.submitRide}>
           <TextField
             disabled={this.state.disabled}
@@ -142,12 +147,17 @@ class RideForm extends Component {
             onChange={this.handleChange}
           />
           {!this.state.disabled &&
+            <div>
             <Button type='submit'>
               Share!
             </Button>
+            <Button type='cancel'>
+              Cancel
+            </Button>
+            </div>
           }
         </form>
-        {this.context &&
+        {user && this.state.disabled &&
           <div>
             <Button onClick={this.remove}>
               Delete
@@ -158,6 +168,8 @@ class RideForm extends Component {
           </div>
         }
       </div>
+    }
+      </AuthenticatedUserContext.Consumer>
     )
   }
 }
