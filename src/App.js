@@ -116,7 +116,7 @@ class App extends Component {
       .then(
         (res) => {
           this.setState({
-            rides: res.data,
+            rides: res.data.data,
             enteringRide: false
           })
       })
