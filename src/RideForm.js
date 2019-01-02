@@ -157,7 +157,7 @@ class RideForm extends Component {
             </div>
           }
         </form>
-        {user && this.state.disabled &&
+        {user && user.profile.sub === this.props.data.sub && this.state.disabled &&
           <div>
             <Button onClick={this.remove}>
               Delete

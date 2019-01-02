@@ -8,38 +8,7 @@ class Header extends Component {
     constructor(props) {
       super(props)
       this.userManager = this.props.userManager
-      // this.state = {}
-      // this.setLoggedInState()
-      // this.userManager.events.addUserLoaded(() => {
-      //   this.setState({
-      //     loggedIn: true
-      //   })
-      // })
-      // this.userManager.events.addUserUnloaded(() => {
-      //   this.setState({
-      //     loggedIn: false
-      //   })
-      // })
     }
-
-    // setLoggedInState = () => {
-    //   this.userManager.getUser()
-    //     .then(user => {
-    //       if (user)
-    //         this.setState({
-    //           loggedIn: true
-    //         })
-    //       else
-    //         this.setState({
-    //           loggedIn: false
-    //         })
-    //     })
-    //     .catch(() => {
-    //       this.setState({
-    //         loggedIn: false
-    //       })
-    //     })
-    // }
 
     login = () => {
       this.userManager.signinRedirect()

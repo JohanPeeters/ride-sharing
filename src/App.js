@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import {Button} from '@material-ui/core'
 import {UserManager} from 'oidc-client'
+import {verify} from './helpers/tokens'
 import {Rides} from './Rides'
 import RideForm from './RideForm'
 import './css/App.css'
@@ -39,24 +40,12 @@ class App extends Component {
           window.location.replace(window.origin)
         })
     } else {
-      this.userManager.getUser()
-        .then(user => {
-          if (user)
-            this.setState({
-              user: user
-            })
-        })
+      this.setUser()
       this.listRides()
     }
     this.userManager.events.addUserLoaded(() => {
-        this.userManager.getUser()
-          .then(user => {
-            if (user)
-              this.setState({
-                user: user
-              })
-          })
-        })
+      this.setUser()
+    })
     this.userManager.events.addUserUnloaded(() => {
       this.setState({
         user: undefined
@@ -67,6 +56,34 @@ class App extends Component {
         user: undefined
       })
     })
+  }
+
+  setUser = () => {
+    this.userManager.getUser()
+      .then(user => {
+        if (user) {
+          verify(user.id_token, this.props.truststore)
+            .then(profile => {
+              user.profile = profile
+              this.setState({
+                user: user
+              })
+            })
+            .catch(err => {
+              // don't be tempted by the same corrupt tokens again
+              this.userManager.removeUser()
+              this.setState({
+                user: undefined,
+                errorMessage: err.message
+              })
+            })
+        } else {
+          this.setState({
+            user: undefined
+          })
+        }
+      })
+      // no catch - getUser never throws an Error
   }
 
   logout = () => {
