@@ -17,12 +17,12 @@ class RideForm extends Component {
       return ('0' + number).slice(-2)
     }
     const now = new Date(Date.now())
-    const initialized = this.props.data.to || this.props.data.from || this.props.data.when
+    const initialized = this.props.data
     return {
       disabled: initialized?true:false,
-      to: this.props.data.to,
-      from: this.props.data.from,
-      when: this.props.data.when ||
+      to: initialized?this.props.data.attributes.to:undefined,
+      from: initialized?this.props.data.attributes.from:undefined,
+      when: initialized?this.props.data.attributes.when :
         `${1900 + now.getYear()}-${ensure2Digits(now.getMonth() + 1)}-${ensure2Digits(now.getDate() + 1)}T12:00`
     }
   }
@@ -34,7 +34,7 @@ class RideForm extends Component {
 
   submitRide = e => {
     e.preventDefault()
-    const path = this.props.data.id?`rides/${this.props.data.id}`:'rides'
+    const path = this.props.data?`rides/${this.props.data.id}`:'rides'
     const config = {
       baseURL: `https://${process.env.REACT_APP_API_HOST}/${process.env.REACT_APP_API_STAGE}`,
       url: path,
@@ -148,16 +148,15 @@ class RideForm extends Component {
           />
           {!this.state.disabled &&
             <div>
-            <Button type='submit'>
-              Share!
-            </Button>
-            <Button type='cancel'>
-              Cancel
-            </Button>
+              <Button type='submit'>
+                Share!
+              </Button>
             </div>
           }
         </form>
-        {user && user.profile.sub === this.props.data.sub && this.state.disabled &&
+        {user && this.props.data &&
+          user.profile.sub === this.props.data.relationships.owner.data.id &&
+          this.state.disabled &&
           <div>
             <Button onClick={this.remove}>
               Delete

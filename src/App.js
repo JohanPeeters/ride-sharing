@@ -146,7 +146,7 @@ class App extends Component {
               </Button>
           }
           {this.state.user && this.state.enteringRide &&
-            <RideForm data={{}} method='post' done={this.done}/>
+            <RideForm method='post' done={this.done}/>
           }
           <Rides list={this.state.rides}
                 update={this.done}
