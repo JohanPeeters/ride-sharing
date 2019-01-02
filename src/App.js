@@ -52,6 +52,7 @@ class App extends Component {
       })
     })
     this.userManager.events.addAccessTokenExpired(() => {
+      this.userManager.removeUser()
       this.setState({
         user: undefined
       })
@@ -107,7 +108,8 @@ class App extends Component {
       url: 'rides',
       method: 'get',
       headers: {
-        'x-api-key': process.env.REACT_APP_API_KEY
+        'x-api-key': process.env.REACT_APP_API_KEY,
+        'accept': 'application/vnd.api+json'
       }
     }
     axios(config)
