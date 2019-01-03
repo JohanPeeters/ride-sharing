@@ -98,15 +98,14 @@ class App extends Component {
       url: 'rides',
       method: 'get',
       headers: {
-        'x-api-key': process.env.REACT_APP_API_KEY,
-        'accept': 'application/vnd.api+json'
+        'x-api-key': process.env.REACT_APP_API_KEY
       }
     }
     axios(config)
       .then(
         (res) => {
           this.setState({
-            rides: res.data.data,
+            rides: res.data,
             enteringRide: false
           })
       })

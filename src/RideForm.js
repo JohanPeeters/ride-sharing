@@ -20,9 +20,9 @@ class RideForm extends Component {
     const initialized = this.props.data
     return {
       disabled: initialized?true:false,
-      to: initialized?this.props.data.attributes.to:undefined,
-      from: initialized?this.props.data.attributes.from:undefined,
-      when: initialized?this.props.data.attributes.when :
+      to: initialized?this.props.data.to:undefined,
+      from: initialized?this.props.data.from:undefined,
+      when: initialized?this.props.data.when :
         `${1900 + now.getYear()}-${ensure2Digits(now.getMonth() + 1)}-${ensure2Digits(now.getDate() + 1)}T12:00`
     }
   }
@@ -155,7 +155,7 @@ class RideForm extends Component {
           }
         </form>
         {user && this.props.data &&
-          user.profile.sub === this.props.data.relationships.owner.data.id &&
+          user.profile.sub === this.props.data.sub &&
           this.state.disabled &&
           <div>
             <Button onClick={this.remove}>
