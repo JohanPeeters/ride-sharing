@@ -8,7 +8,7 @@ Node 8.x
 
 ## Getting Started
 
-If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk. On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
+If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
 
 1. Gain access to a backend API by setting one up for yourself or requesting the following from the author:
    * the URL (including stage) of the API
@@ -29,12 +29,15 @@ If you only want to observe the behavior of this SPA, you can do so at https://r
    * `REACT_APP_HOTJAR_INLINE_SETUP_SRI`
    * `REPORT_URI_SUBDOMAIN`
    * `AS`
+   * `INLINE_RUNTIME_CHUNK` - this is only needed when you are doing production builds, e.g. on Netlify. It should be set to `false`; this causes the runtime script not to be inlined in a production build. If the variable is not set to `false` during a Netlify build, the runtime script will fail to execute because of the CSP specified in `netlify.toml`.
 1. `npm install`
 1. `npm start`
    * starts a development server
    * opens a tab in the default browser
    * loads the SPA.
 1. Make changes and watch the effects on the application.
+
+The repo contains files to build and deploy the application on Netlify as well as the source code.
 
 ## React
 
@@ -105,7 +108,10 @@ The user may wish to stop using his or her credentials on the back end. There is
 * *flicker on redirect* - when the user is logged in to the authorization server, but has cleared tokens, he or she can log back in without re-authenticating if the authenticated session has not expired (see above). In this scenario, there is a redirect from the client to the AS and back to the client without any user interaction. Ideally, the user would not notice. This is not the case since a redirect causes the React application to reload and re-render. My current thinking is that this is inherent in React and can only be avoided with considerable effort, but I am hoping to be proven wrong. Moving to popups does not seem to be a fruitful approach as it would merely replace one UI glitch with another.
 * *token validity period* is 1 hour. This is rather long, but fixed by Cognito and, at the time of writing, cannot be changed.
 * *network round trips* - each time a token is requested, issuer metadata are retrieved. oidc-client-js seems to do this by design. Since metadata, such as the location of the authorization or token endpoints change only very sporadically, they are prime candidates for caching. This could be done with the service worker. Currently, the service worker is disabled.
-* the *script-src and style-src* CSP directives were designed to mitigate the risk of, respectively, script injection (XSS) and CSS. Unless explicitly allowed, the browser refuses to run any inline scripts. However, React uses both scripts and styles inline. It has been pointed out in the React community that this does not sit well with CSP, but there is no clear strategy or timeline on how this can be resolved. For now, therefore, the choice is between no CSP at all or one that is rather inadequate because it allows inlining scripts and styles.
+* the *script-src* CSP directive was designed to mitigate the risk of XSS. Unless explicitly allowed, the browser refuses to run any inline scripts. By default React uses an inline script. This can be switched off in a production environment by setting the `INLINE_RUNTIME_CHUNK` to `false`.
+* the *style-src* CSP directives was designed to mitigate the risk of CSS injection. Unless explicitly allowed, the browser refuses to load any inline styles. However, this application uses Material UI, which in turn relies on JSS for styling. JSS places styles inline. JSS documentation suggests [protecting these with a nonce](https://cssinjs.org/csp?v=v10.0.0-alpha.7), but the suggested technique relies on express middleware. Since our application is delivered as a static file, there is no need for express. Indeed, as nonces rely on being unique for every running instance, they cannot be used in this context. The 2 remaining alternatives are
+   * supply an SRI-hash for every inline styles,
+   * allow `unsafe-inline`.
+I'm ashamed to admit I opted for this one. There are just too many inline styles for the former.
 * *script-src and style-src vs script-src-elem and style-src-elem* - the former are currently standardized, the latter are in the CSP level 3 draft standard. The latter affords more fine-grained control and will presumably become the directives of choice. As they are still at the draft stage, they have not been used for now.
-* *GDPR* - the application loads a hotjar script that records the entire session. The user is not warned and cannot object or request for the data to be deleted. This has to be an infringement of GDPR somehow.
 * *token validation* - oidc-client validates a number of claims such as `iss`, `iat`, `exp`, `aud` and `azp`. However, it does not verify the signature. Before placing the user in an authenticated context, `App` calls `helpers/tokens.verify()` to verify the signature. At the moment, this method also performs a number of redundant claim checks.
