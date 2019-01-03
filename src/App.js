@@ -31,14 +31,16 @@ class App extends Component {
     if (params && params.get('code')) {
       this.userManager.signinRedirectCallback(urlStr)
         .then(user => {
-          window.location.replace(window.origin)
+          this.stripCode()
         })
         .catch(error => {
           this.setState({
             errorMessage: `cannot login: error exchanging code for token - ${JSON.stringify(error)}`
           })
-          this.listRides()
         })
+        .finally (
+          this.listRides()        
+        )
     } else {
       this.setUser()
       this.listRides()
@@ -57,6 +59,10 @@ class App extends Component {
         user: undefined
       })
     })
+  }
+
+  stripCode = () => {
+    window.history.replaceState({}, '', window.origin)
   }
 
   setUser = () => {
