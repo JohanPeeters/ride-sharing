@@ -39,7 +39,7 @@ class App extends Component {
           })
         })
         .finally (
-          this.listRides()        
+          this.listRides()
         )
     } else {
       this.setUser()
@@ -93,7 +93,8 @@ class App extends Component {
 
   done = (errorMessage) => {
     this.setState({
-      errorMessage: errorMessage
+      errorMessage: errorMessage,
+      enteringRide: false
     })
     this.listRides()
   }

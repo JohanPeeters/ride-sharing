@@ -114,9 +114,15 @@ class RideForm extends Component {
   }
 
   edit = e => {
+    this.prevState = this.state
     this.setState({
       disabled: false
     })
+  }
+
+  cancel = e => {
+    this.setState(this.prevState)
+    this.props.done()
   }
 
   render() {
@@ -150,6 +156,9 @@ class RideForm extends Component {
             <div>
               <Button type='submit'>
                 Share!
+              </Button>
+              <Button type='reset' onClick={this.cancel}>
+                Cancel
               </Button>
             </div>
           }
