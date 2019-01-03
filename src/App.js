@@ -35,9 +35,9 @@ class App extends Component {
         })
         .catch(error => {
           this.setState({
-            errorMessage: JSON.stringify(error)
+            errorMessage: `cannot login: error exchanging code for token - ${JSON.stringify(error)}`
           })
-          window.location.replace(window.origin)
+          this.listRides()
         })
     } else {
       this.setUser()
