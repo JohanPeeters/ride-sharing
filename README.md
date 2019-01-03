@@ -18,10 +18,17 @@ If you only want to observe the behavior of this SPA, you can do so at https://r
 1. `git clone https://github.com/JohanPeeters/ride-sharing`
 1. `cd ride-sharing`
 1. All the information allowing you to connect to the API need to be supplied to the SPA. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
-   * `REACT_APP_API`
    * `REACT_APP_API_KEY`
-   * `REACT_APP_ISSUER`
+   * `REACT_APP_API_HOST`
+   * `REACT_APP_API_STAGE`
    * `REACT_APP_CLIENT_ID`
+   * `REACT_APP_ISSUER`
+   * `REACT_APP_HOTJAR_ID`
+   * `REACT_APP_HOTJAR_SNIPPET_VERSION`
+   * `REACT_APP_HOTJAR_SRI`
+   * `REACT_APP_HOTJAR_INLINE_SETUP_SRI`
+   * `REPORT_URI_SUBDOMAIN`
+   * `AS`
 1. `npm install`
 1. `npm start`
    * starts a development server
