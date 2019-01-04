@@ -23,7 +23,8 @@ class RideForm extends Component {
       to: initialized?this.props.data.to:undefined,
       from: initialized?this.props.data.from:undefined,
       when: initialized?this.props.data.when :
-        `${1900 + now.getYear()}-${ensure2Digits(now.getMonth() + 1)}-${ensure2Digits(now.getDate() + 1)}T12:00`
+        `${1900 + now.getYear()}-${ensure2Digits(now.getMonth() + 1)}-${ensure2Digits(now.getDate() + 1)}T12:00`,
+      contact: initialized?this.props.data.contact:undefined
     }
   }
 
@@ -46,7 +47,8 @@ class RideForm extends Component {
       data: {
         from: this.state.from,
         to: this.state.to,
-        when: this.state.when
+        when: this.state.when,
+        contact: this.state.contact
       }
     }
     axios(config)
@@ -152,6 +154,24 @@ class RideForm extends Component {
             value={this.state.when}
             onChange={this.handleChange}
           />
+          {!this.state.disabled &&
+          <TextField
+            disabled={false}
+            label='Contact'
+            name='contact'
+            type='url'
+            value={this.state.contact}
+            onChange={this.handleChange}
+          />}
+          {this.state.disabled && this.state.contact &&
+          <Button
+            disabled={false}
+            label='Contact'
+            name='contact'
+            href={this.state.contact}
+          >
+            contact
+          </Button>}
           {!this.state.disabled &&
             <div>
               <Button type='submit'>
