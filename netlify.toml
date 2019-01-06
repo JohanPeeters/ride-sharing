@@ -3,7 +3,7 @@
 
   [headers.values]
     Content-Security-Policy-Report-Only = "base-uri 'self'; default-src 'none'; form-action 'none'; frame-ancestors 'none'; connect-src REACT_APP_API_HOST_PLACEHOLDER https://cognito-idp.eu-west-1.amazonaws.com https://AS_PLACEHOLDER; frame-src https://www.gocarma.com; img-src 'self'; script-src 'self'; style-src 'self'  https://fonts.googleapis.com https://use.fontawesome.com; font-src https://fonts.gstatic.com; object-src 'none'; report-to default; report-uri https://REPORT_URI_SUBDOMAIN_PLACEHOLDER.report-uri.com/r/d/csp/wizard"
-    Content-Security-Policy = "default-src 'none'; form-action 'none'; frame-ancestors 'none'; connect-src REACT_APP_API_HOST_PLACEHOLDER https://cognito-idp.eu-west-1.amazonaws.com https://AS_PLACEHOLDER; frame-src https://www.gocarma.com; img-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://use.fontawesome.com; object-src 'none'; report-to default"
+    Content-Security-Policy = "default-src 'none'; form-action 'none'; frame-ancestors 'none'; connect-src REACT_APP_API_HOST_PLACEHOLDER https://cognito-idp.eu-west-1.amazonaws.com https://AS_PLACEHOLDER; frame-src https://www.gocarma.com; img-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://use.fontawesome.com; font-src https://fonts.gstatic.com; object-src 'none'; report-to default"
     Report-To = '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://REPORT_URI_SUBDOMAIN_PLACEHOLDER.report-uri.com/a/d/g"}],"include_subdomains":true}'
     NEL = '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
     Referrer-Policy = "strict-origin-when-cross-origin"
