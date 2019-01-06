@@ -48,7 +48,7 @@ class RideForm extends Component {
         from: this.state.from,
         to: this.state.to,
         when: this.state.when,
-        contact: this.state.contact
+        contact: this.safeContact(this.state.contact)
       }
     }
     axios(config)
@@ -127,6 +127,21 @@ class RideForm extends Component {
     this.props.done()
   }
 
+  safeContact = contact => {
+    let url
+    try {
+      url = new URL(this.state.contact)
+    } catch(err) {
+      return null
+    }
+    const protocol = url.protocol
+    if (protocol === 'mailto:' || protocol === 'http:' || protocol === 'https:') {
+      return contact
+    } else {
+      return null
+    }
+  }
+
   render() {
     return (
       <AuthenticatedUserContext.Consumer>
@@ -163,12 +178,14 @@ class RideForm extends Component {
             value={this.state.contact}
             onChange={this.handleChange}
           />}
-          {this.state.disabled && this.state.contact &&
+          {this.state.disabled && this.safeContact(this.state.contact) &&
           <Button
             disabled={false}
             label='Contact'
             name='contact'
-            href={this.state.contact}
+            type='url'
+            href={this.safeContact(this.state.contact)}
+            rel='noreferrer'
           >
             contact
           </Button>}
