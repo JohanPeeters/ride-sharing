@@ -14,9 +14,9 @@ const config = {
   client_id: process.env.REACT_APP_CLIENT_ID,
   redirect_uri: window.origin,
   response_type: 'code',
-  post_logout_redirect_uri: window.origin,
   scope: 'openid rides/create rides/delete rides/update',
-  loadUserInfo: false
+  loadUserInfo: false,
+  automaticSilentRenew: true
 }
 
 class App extends Component {
