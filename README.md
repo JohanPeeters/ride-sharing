@@ -23,10 +23,6 @@ If you only want to observe the behavior of this SPA, you can do so at https://r
    * `REACT_APP_API_STAGE`
    * `REACT_APP_CLIENT_ID`
    * `REACT_APP_ISSUER`
-   * `REACT_APP_HOTJAR_ID`
-   * `REACT_APP_HOTJAR_SNIPPET_VERSION`
-   * `REACT_APP_HOTJAR_SRI`
-   * `REACT_APP_HOTJAR_INLINE_SETUP_SRI`
    * `REPORT_URI_SUBDOMAIN`
    * `AS`
    * `INLINE_RUNTIME_CHUNK` - this is only needed when you are doing production builds, e.g. on Netlify. It should be set to `false`; this causes the runtime script not to be inlined in a production build. If the variable is not set to `false` during a Netlify build, the runtime script will fail to execute because of the CSP specified in `netlify.toml`.
