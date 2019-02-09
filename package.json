@@ -17,7 +17,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build_headerfile": "npm run build && awk 'NR==FNR{key[NR]=$1\"_PLACEHOLDER\";value[NR]=$2;next}{for(i in key){gsub(key[i],value[i])};print} ' FS='=' .env FS='' _headers > build/_headers"
   },
   "eslintConfig": {
     "extends": "react-app"

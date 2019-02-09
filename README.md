@@ -8,32 +8,49 @@ Node 8.x
 
 ## Getting Started
 
-If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
+If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, the instructions to set up your own experiments by cloning the repo and making changes are provided here.
 
-1. Gain access to a backend API by setting one up for yourself or requesting the following from the author:
-   * the URL (including stage) of the API
-   * an API key
-   * the issuer's URL
-   * a client ID
-1. `git clone https://github.com/JohanPeeters/ride-sharing`
-1. `cd ride-sharing`
-1. All the information allowing you to connect to the API need to be supplied to the SPA. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
-   * `REACT_APP_API_KEY`
-   * `REACT_APP_API_HOST`
-   * `REACT_APP_API_STAGE`
-   * `REACT_APP_CLIENT_ID`
-   * `REACT_APP_ISSUER`
-   * `REPORT_URI_SUBDOMAIN`
-   * `AS`
-   * `INLINE_RUNTIME_CHUNK` - this is only needed when you are doing production builds, e.g. on Netlify. It should be set to `false`; this causes the runtime script not to be inlined in a production build. If the variable is not set to `false` during a Netlify build, the runtime script will fail to execute because of the CSP specified in `netlify.toml`.
-1. `npm install`
-1. `npm start`
-   * starts a development server
-   * opens a tab in the default browser
-   * loads the SPA.
-1. Make changes and watch the effects on the application.
+### Preparation:
+* Create a netlify account at https://www.netlify.com/
+* (Optional) Set up your own authorization server and back-end API if not provided by the instructor by following the Getting Started section at https://github.com/JohanPeeters/rides-api
+* (Optional) Create a freenom account at https://www.freenom.com
+* (Optional) Register an account at https://report-uri.com
 
-The repo contains files to build and deploy the application on Netlify as well as the source code.
+### Get the code
+First clone into the repo  
+`git clone https://github.com/JohanPeeters/ride-sharing.git`  
+`cd ride-sharing`
+
+Create a .env file in the root directory of the project:
+
+    REACT_APP_API_KEY=<in case your API is hosted on AWS, an API-key is required>
+    REACT_APP_API_HOST=<API location (exclude the scheme)>
+    REACT_APP_API_STAGE=<in case you use a path to indicate staging, leave empty if you are not certain>
+    REACT_APP_CLIENT_ID=<the client ID registered at the authorization server>
+    REACT_APP_ISSUER=<the issuer of the ID token>
+    REPORT_URI_SUBDOMAIN=<in case you created a report-URI account, the subdomain of your report-URI account>
+    AS=<AS location (exclude the scheme)>
+    INLINE_RUNTIME_CHUNK=false
+
+`npm install`  
+`npm audit`
+
+### Run the code locally
+`npm start`
+
+This will start a development server, open a tab in your default browser, and load the SPA. You can now make changes and the changes will be live-reloaded.
+
+### Run the code on Netlify
+You have two options:
+
+1. `npm run build`
+2. `npm run build_headerfile`
+
+In case you have configured Netlify for continuous deployment, go for option 1, and the deploy will happen automatically.
+In case you're simply copy pasting the build folder to Netlify, go for option 2, and copy paste the build folder.
+
+### Configure custom domain (optional)
+(Optional) If you have chosen for a custom .tk domain, you'll have to change the nameservers at freenom to those of Netlify. You may have to wait a couple of minutes before the DNS changes are applied and HTTPS can be activated. 
 
 ## React
 
@@ -75,6 +92,10 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+#### `npm run build_headerfile`
+
+Runs `npm run build` and prepares a _headers file which can be picked up by Netlify without having to configure continuous deployment. This should only be used if you wish to deploy to Netlify by copy pasting the build folder. 
 
 ### Learn More about React
 
