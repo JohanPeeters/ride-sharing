@@ -44,15 +44,20 @@ Create a .env file in the root directory of the project:
 
 This will start a development server, open a tab in your default browser, and load the SPA. You can now make changes and the changes will be live-reloaded.
 
-### (optional) Deploy the code to Netlify
+### Deploy the code to Netlify
+Should you wish to deploy the code to Netlify, simply run
 `make all`
 
-This will prepare the netlify.toml and _headers file for deployment on Netlify. 
+Note that this will also prepare the netlify.toml and _headers file for deployment on Netlify in order for Netlify to set the correct HTTP headers automatically. 
 
 In case you have configured Netlify for continuous deployment, the deploy will happen automatically.
 In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.
 
-(Optional) If you have chosen for a custom .tk domain, you'll have to change the nameservers at freenom to those of Netlify. You may have to wait a couple of minutes before the DNS changes are applied and HTTPS can be activated. 
+### Deploy the code to a different platform
+You can still run
+`make all`
+
+But you will have to find a different way to set the HTTP Headers (usually, this is platform-specific). 
 
 ## React
 
