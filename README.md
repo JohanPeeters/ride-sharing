@@ -48,7 +48,8 @@ Should you wish to deploy the code to Netlify, simply run
 Note that this will also prepare the netlify.toml and _headers file for deployment on Netlify in order for Netlify to set the correct HTTP headers automatically. 
 
 In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.
-In case you have configured Netlify for continuous deployment, the deploy will happen automatically. Do not forget to manually set the environment variables in the settings of the Netlify app. 
+In case you have configured Netlify for continuous deployment, the deploy will happen automatically.  
+Do not forget to manually set the environment variables in the settings of the Netlify app. 
 
 ### Deploy the code to a different platform
 To get a compiled build folder, you can still run
