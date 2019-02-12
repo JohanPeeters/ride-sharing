@@ -6,6 +6,11 @@ This is an SPA written for didactic purposes. It consumes a backend API defined 
 
 Node 8.x
 
+## Prerequisites - Windows only
+* MinGW with base MSYS package added to your PATH
+* `copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe`
+* `copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe`
+
 ## Getting Started
 
 If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). 
