@@ -10,10 +10,7 @@ Node 8.x
 
 If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). 
 
-On the other hand, the instructions to set up your own experiments by cloning the repo and making changes locally are provided here. In addition, we also provide instructions to get the app up and running on Netlify, since that's the platform we chose to use for our exercise playground. You are free to choose a different platform, but be aware that some features may not be supported in that case:
-* the 'netlify.toml' file for autoconfiguring is Netlify-specific
-* the _headers file is Netlify-specific
-* When enabling continuous deployment using Netlify, it will run 
+On the other hand, the instructions to set up your own experiments by cloning the repo and making changes locally are provided here. In addition, we also provide instructions to get the app up and running on Netlify, since that's the platform we chose to use for our exercise playground.
 
 ### Preparation:
 * (Optional) Should you wish to host the app on netlify, create an account at https://www.netlify.com/
@@ -54,7 +51,7 @@ In case you have configured Netlify for continuous deployment, the deploy will h
 In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.
 
 ### Deploy the code to a different platform
-You can still run
+To get a compiled build folder, you can still run
 `make all`
 
 But you will have to find a different way to set the HTTP Headers (usually, this is platform-specific). 
