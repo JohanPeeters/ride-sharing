@@ -13,9 +13,9 @@ Node 8.x
 
 ## Getting Started
 
-If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). 
+If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com).
 
-On the other hand, the instructions to set up your own experiments by cloning the repo and making changes locally are provided here. In addition, we also provide instructions to get the app up and running on Netlify, since that's the platform we chose to use for our exercise playground. You are free to use your own preferred platform, but you will lose the automatical configuration of the HTTP headers based on the environment variables. 
+On the other hand, the instructions to set up your own experiments by cloning the repo and making changes locally are provided here. In addition, we also provide instructions to get the app up and running on Netlify, since that's the platform we chose to use for our exercise playground. You are free to use your own preferred platform, but you will lose the automatical configuration of the HTTP headers based on the environment variables.
 
 ### Preparation:
 * (Optional) Should you wish to host the app on netlify, create an account at https://www.netlify.com/
@@ -47,20 +47,20 @@ Create a .env file in the root directory of the project:
 This will start a development server, open a tab in your default browser, and load the SPA. You can now make changes and the changes will be live-reloaded.
 
 ### Deploy the code to Netlify
-Should you wish to deploy the code to Netlify, simply run  
-`make all`
+The best option is to fork this repo into your own GitHub repo and to configure Netlify continuous deployment. This way, code changes will be deployed whenever you push them to GitHub.
 
-Note that this will also prepare the netlify.toml and _headers file for deployment on Netlify in order for Netlify to set the correct HTTP headers automatically. 
+`.env` contains secrets, so it should not be committed to the repo - `.gitignore` contains an entry to that effect. On the other hand, to run the build, Netlify needs to know these values, so the environment variables need to be set as *Build environment variables* in your Netlify site configuration. In the *Build settings* you also need to indicate that `make` is the build command and that build artifacts will be placed in the `build/` *Publish directory*.
 
-In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.  
-In case you have configured Netlify for continuous deployment, the deploy will happen automatically.  
-Do not forget to manually set the environment variables in the settings of the Netlify app. 
+If you do not want to fork and configure continuous deployment, you need to
+* build locally (`make`),
+* create a `_headers` file in `build/` with the values found in the *headers* section of `netlify.toml` - Netlify will use this to set the correct HTTP headers,
+* upload `build/` to your Netlify site.
 
 ### Deploy the code to a different platform
 To get a compiled build folder, you can still run
-`make all`
+`make`
 
-But you will have to find a different way to set the HTTP Headers (usually, this is platform-specific). 
+But you will have to find a different way to set the HTTP Headers (usually, this is platform-specific).
 
 ## React
 
@@ -84,6 +84,8 @@ Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 #### `npm run build`
+
+There should be no need to run this script - it is wrapped by `make`.
 
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
